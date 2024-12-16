@@ -1,8 +1,12 @@
-# Start VM
-- proxmox_kvm:
-  api_user    : root@pam
-  api_password: shamen01
-  api_host    : 192.168.1.140
-  name        : ubuntu01
-  node        : daveServer
-  state       : started
+- name: Test to try and update Proxmox
+  hosts: all
+  become: true
+  tasks:  
+    - name: Start Vm
+      proxmox_kvm:
+        api_user    : root@pam
+        api_password: shamen01
+        api_host    : 192.168.1.140
+        name        : ubuntu01
+        node        : daveServer
+        state       : started    
