@@ -1,8 +1,8 @@
 # Start VM
 - proxmox_kvm:
-    api_user    : root@pam
-    api_password: shamen01
-    api_host    : 192.168.1.140
-    name        : ubuntu01
-    node        : daveServer
-    state       : started
+  api_user    : root@pam
+  api_password: shamen01
+  api_host    : 192.168.1.140
+  name        : ubuntu01
+  node        : daveServer
+  state       : started
