@@ -1,0 +1,11 @@
+- name: Start a Proxmox VM
+  hosts: Linux VM
+  tasks:
+    - name: Start VM
+      community.general.proxmox:
+        api_host: 192.168.1.140
+        api_user: "dave@pam"
+        api_password: "4d8849df-4c52-43c7-a1e5-e4ef31d0a769"
+        node: "daveServer"
+        vmid: 101
+        state: started
