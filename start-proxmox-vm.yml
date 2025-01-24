@@ -8,10 +8,13 @@
 #        state: present
 #      become: yes
 
-    - name: Bootstrap pip using ensurepip
-      ansible.builtin.command:
-        cmd: python3 -m ensurepip
-      become: yes
+    - name: Install pip using apt
+      apt:
+        name: python3-pip
+        state: present
+        update_cache: yes
+        force: yes
+        become: yes
 
     - name: Install setuptools module via pip
       ansible.builtin.pip:
