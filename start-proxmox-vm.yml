@@ -2,10 +2,15 @@
 - name: Create VM from Proxmox Template
   hosts: all
   tasks:
-    - name: Install python3-pip
-      ansible.builtin.apt:
-        name: python3-pip
-        state: present
+#    - name: Install python3-pip
+#      ansible.builtin.apt:
+#        name: python3-pip
+#        state: present
+#      become: yes
+
+    - name: Bootstrap pip using ensurepip
+      ansible.builtin.command:
+        cmd: python3 -m ensurepip
       become: yes
 
     - name: Install setuptools module via pip
