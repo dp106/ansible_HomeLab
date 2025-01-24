@@ -1,5 +1,5 @@
 - name: Start a Proxmox VM
-  hosts: 192.168.1.140
+  hosts: all
   tasks:
     - name: Start VM
       community.general.proxmox:
