@@ -26,28 +26,14 @@
       args:
         executable: /bin/bash
 
-    - name: Install setuptools in venv
+    - name: Install required modules in venv
       shell: |
         source venv/bin/activate
         pip install setuptools
+        pip install requests
+        pip install proxmoxer
       args:
         executable: /bin/bash
-
-
-#    - name: Install setuptools module via pip
-#      ansible.builtin.pip:
-#        name: setuptools
-#        state: present
-
-    - name: Install requests module via pip
-      ansible.builtin.pip:
-        name: requests
-        state: present
-
-    - name: Install proxmoxer module via pip
-      ansible.builtin.pip:
-        name: proxmoxer
-        state: present
 
     - name: Start VM
       community.general.proxmox:
