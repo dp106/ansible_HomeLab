@@ -53,4 +53,5 @@
       shell: |
         source venv/bin/activate
         ansible-playbook /home/startvm.yml
-
+      args:
+        executable: /bin/bash
