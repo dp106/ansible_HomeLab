@@ -1,0 +1,57 @@
+---
+- name: Create VM from Proxmox Template
+  hosts: all
+  tasks:
+    - name: Install virtualenv
+      apt:
+        name: python3-venv
+        state: present
+        update_cache: yes
+      become: yes
+    
+    - name: Create a virtual environment
+      ansible.builtin.command:
+        cmd: python3 -m venv venv
+
+    - name: Activate virtual environment and install pip
+      shell: |
+        source venv/bin/activate
+        pip install --upgrade pip
+      args:
+        executable: /bin/bash
+
+    - name: Install required modules in venv
+      shell: |
+        source venv/bin/activate
+        pip install setuptools
+        pip install requests
+        pip install proxmoxer
+        pip install ansible
+        ansible-galaxy collection install community.general
+
+      args:
+        executable: /bin/bash
+
+    - name: Creating local playbook
+      copy:
+        dest: "/home/startvm.yml"
+        content: |
+          - name: Start VM
+            hosts: localhost
+            tasks:
+              - name: Start VM
+                community.general.proxmox_kvm:
+                  api_host: 192.168.1.140
+                  api_token_id: ansible-token
+                  api_token_secret: 4d8849df-4c52-43c7-a1e5-e4ef31d0a769
+                  api_user: "dave@pam"
+                  node: "daveServer"
+                  name: ubuntu01
+                  state: started
+
+    - name: Run playbook to start vm...
+      shell: |
+        source venv/bin/activate
+        ansible-playbook /home/startvm.yml
+      args:
+        executable: /bin/bash
