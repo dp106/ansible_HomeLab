@@ -18,7 +18,7 @@
     - name: Create a virtual environment
       ansible.builtin.command:
         cmd: python3 -m venv venv
-    
+
     - name: Activate virtual environment and install pip
       shell: |
         source venv/bin/activate
@@ -26,11 +26,18 @@
       args:
         executable: /bin/bash
 
+    - name: Install setuptools in venv
+      shell: |
+        source venv/bin/activate
+        pip install setuptools
+      args:
+        executable: /bin/bash
 
-    - name: Install setuptools module via pip
-      ansible.builtin.pip:
-        name: setuptools
-        state: present
+
+#    - name: Install setuptools module via pip
+#      ansible.builtin.pip:
+#        name: setuptools
+#        state: present
 
     - name: Install requests module via pip
       ansible.builtin.pip:
