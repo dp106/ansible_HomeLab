@@ -48,5 +48,5 @@
     - name: Run playbook to start vm...
       shell: |
         source venv/bin/activate
-        ansible-playbook startvm.yml
+        ansible-playbook /home/startvm.yml
 
