@@ -37,13 +37,17 @@
         dest: "/home/startvm.yml"
         content: |
           - name: Start VM
-            community.general.proxmox:
-              api_host: 192.168.1.140
-              api_user: "dave@pam"
-              api_password: "4d8849df-4c52-43c7-a1e5-e4ef31d0a769"
-              node: "daveServer"
-              vmid: 101
-              state: started
+            hosts: localhost
+            tasks:
+              - name: Start VM
+                community.general.proxmox:
+                  api_host: 192.168.1.140
+                  port: 8006
+                  api_user: "dave@pam"
+                  api_password: "4d8849df-4c52-43c7-a1e5-e4ef31d0a769"
+                  node: "daveServer"
+                  vmid: 101
+                  state: started
 
     - name: Run playbook to start vm...
       shell: |
