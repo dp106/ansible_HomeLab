@@ -1,0 +1,64 @@
+---
+- name: Manage Proxmox hosts
+  hosts: localhost
+  gather_facts: false
+
+  vars:
+    proxmox_api_url: "https://192.168.1.140:8006/api2/json" # Replace with your Proxmox URL
+    proxmox_user: "dave@pam"                                # Replace with your Proxmox username
+    proxmox_password: "shamen01"                      # Replace with your Proxmox password
+    proxmox_nodes:                                           # List your Proxmox nodes
+      - node_name: "daveServer"
+        vm_ids:
+          - 101
+          - 103
+          - 104
+          - 105
+          - 106
+          - 107
+          - 108
+#      - node_name: "node2"
+#        vm_ids:
+#          - 200
+
+  tasks:
+    - name: Check if VM is running
+      uri:
+        url: "{{ proxmox_api_url }}/nodes/{{ item.node_name }}/qemu/{{ vm_id }}/status/current"
+        method: GET
+        user: "{{ proxmox_user }}"
+        password: "{{ proxmox_password }}"
+        force_basic_auth: yes
+        validate_certs: no
+      with_nested:
+        - "{{ proxmox_nodes }}"
+        - "{{ item.vm_ids }}"
+      register: vm_status
+
+    - name: Start VM if it is stopped
+      uri:
+        url: "{{ proxmox_api_url }}/nodes/{{ item.0.node_name }}/qemu/{{ item.1 }}/status/start"
+        method: POST
+        user: "{{ proxmox_user }}"
+        password: "{{ proxmox_password }}"
+        force_basic_auth: yes
+        validate_certs: no
+      with_items: "{{ vm_status.results | json_query('[?json.running==`false`].[item.0, item.1]') }}"
+      register: started_vms
+
+    - name: Update all VMs
+      ansible.builtin.shell: |
+        apt-get update && apt-get upgrade -y
+      with_nested:
+        - "{{ proxmox_nodes }}"
+        - "{{ item.vm_ids }}"
+
+    - name: Shut down VM if it was started by this playbook
+      uri:
+        url: "{{ proxmox_api_url }}/nodes/{{ item.0.node_name }}/qemu/{{ item.1 }}/status/shutdown"
+        method: POST
+        user: "{{ proxmox_user }}"
+        password: "{{ proxmox_password }}"
+        force_basic_auth: yes
+        validate_certs: no
+      with_items: "{{ started_vms.results | json_query('[?status==`200`].[item.0, item.1]') }}"
