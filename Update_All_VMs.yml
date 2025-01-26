@@ -24,7 +24,7 @@
   tasks:
     - name: Check if VM is running
       uri:
-        url: "{{ proxmox_api_url }}/nodes/{{ node.node_name }}/qemu/{{ vm_id }}/status/current"
+        url: "{{ proxmox_api_url }}/nodes/{{ item.0.node_name }}/qemu/{{ item.1 }}/status/current"
         method: GET
         user: "{{ proxmox_user }}"
         password: "{{ proxmox_password }}"
@@ -32,28 +32,18 @@
         validate_certs: no
       with_nested:
         - "{{ proxmox_nodes }}"
-        - "{{ item.vm_ids }}"
-      loop_control:
-        loop_var: node_vm_pair
-      vars:
-        node: "{{ node_vm_pair[0] }}"
-        vm_id: "{{ node_vm_pair[1] }}"
+        - "{{ proxmox_nodes | map('extract', 'vm_ids') | list | flatten }}"
       register: vm_status
 
     - name: Start VM if it is stopped
       uri:
-        url: "{{ proxmox_api_url }}/nodes/{{ node.node_name }}/qemu/{{ vm_id }}/status/start"
+        url: "{{ proxmox_api_url }}/nodes/{{ item.0.node_name }}/qemu/{{ item.1 }}/status/start"
         method: POST
         user: "{{ proxmox_user }}"
         password: "{{ proxmox_password }}"
         force_basic_auth: yes
         validate_certs: no
-      loop: "{{ vm_status.results | json_query('[?json.running==`false`].[item[0], item[1]]') }}"
-      loop_control:
-        loop_var: node_vm_pair
-      vars:
-        node: "{{ node_vm_pair[0] }}"
-        vm_id: "{{ node_vm_pair[1] }}"
+      with_items: "{{ vm_status.results | json_query('[?json.running==`false`].[item.0, item.1]') }}"
       register: started_vms
 
     - name: Update all VMs
@@ -61,24 +51,14 @@
         apt-get update && apt-get upgrade -y
       with_nested:
         - "{{ proxmox_nodes }}"
-        - "{{ item.vm_ids }}"
-      loop_control:
-        loop_var: node_vm_pair
-      vars:
-        node: "{{ node_vm_pair[0] }}"
-        vm_id: "{{ node_vm_pair[1] }}"
+        - "{{ proxmox_nodes | map('extract', 'vm_ids') | list | flatten }}"
 
     - name: Shut down VM if it was started by this playbook
       uri:
-        url: "{{ proxmox_api_url }}/nodes/{{ node.node_name }}/qemu/{{ vm_id }}/status/shutdown"
+        url: "{{ proxmox_api_url }}/nodes/{{ item.0.node_name }}/qemu/{{ item.1 }}/status/shutdown"
         method: POST
         user: "{{ proxmox_user }}"
         password: "{{ proxmox_password }}"
         force_basic_auth: yes
         validate_certs: no
-      loop: "{{ started_vms.results | json_query('[?status==`200`].[item[0], item[1]]') }}"
-      loop_control:
-        loop_var: node_vm_pair
-      vars:
-        node: "{{ node_vm_pair[0] }}"
-        vm_id: "{{ node_vm_pair[1] }}"
+      with_items: "{{ started_vms.results | json_query('[?status==`200`].[item.0, item.1]') }}"
