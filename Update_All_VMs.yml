@@ -20,11 +20,10 @@
 #      - node_name: "node2"
 #        vm_ids:
 #          - 200
-
   tasks:
     - name: Check if VM is running
       uri:
-        url: "{{ proxmox_api_url }}/nodes/{{ item.node_name }}/qemu/{{ vm_id }}/status/current"
+        url: "{{ proxmox_api_url }}/nodes/{{ proxmox_node.node_name }}/qemu/{{ vm_id }}/status/current"
         method: GET
         user: "{{ proxmox_user }}"
         password: "{{ proxmox_password }}"
@@ -52,6 +51,8 @@
       with_nested:
         - "{{ proxmox_nodes }}"
         - "{{ item.vm_ids }}"
+      loop_control:
+        loop_var: vm
 
     - name: Shut down VM if it was started by this playbook
       uri:
