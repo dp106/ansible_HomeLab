@@ -8,6 +8,7 @@
     proxmox_user: "dave@pam"                                # Replace with your Proxmox username
     proxmox_password: "shamen01"                      # Replace with your Proxmox password
     proxmox_node:  "daveServer"                                         # Proxmox node
+    ansible_python_interpreter: /root/venv/bin/python
     vm_ids:
           - 101
           - 103
