@@ -4,9 +4,10 @@
   gather_facts: false
 
   vars:
-    proxmox_api_url: "https://192.168.1.140:8006/api2/json" # Replace with your Proxmox URL
-    proxmox_user: "dave@pam"                                # Replace with your Proxmox username
-    proxmox_password: "shamen01"                      # Replace with your Proxmox password
+    api_host: 192.168.1.140                                  # Proxmox Server
+    api_token_id: ansible-token
+    api_token_secret: 4d8849df-4c52-43c7-a1e5-e4ef31d0a769
+    api_user: "dave@pam"    
     proxmox_node:  "daveServer"                                         # Proxmox node
     ansible_python_interpreter: /root/venv/bin/python
     vm_ids:
@@ -16,23 +17,12 @@
 
   tasks:
 
-#    - name: Check if VM is running
-#      uri:
-#        url: "{{ proxmox_api_url }}/nodes/{{ proxmox_node }}/qemu/{{ item }}/status/current"
-#        method: GET
- #       user: "{{ proxmox_user }}"
-#        password: "{{ proxmox_password }}"
-#        force_basic_auth: yes
-#        validate_certs: no
-#      loop:  "{{ vm_ids }}"
-#      register: vm_status
-
     - name: Start VM
       community.general.proxmox_kvm:
-        api_host: 192.168.1.140
-        api_token_id: ansible-token
-        api_token_secret: 4d8849df-4c52-43c7-a1e5-e4ef31d0a769
-        api_user: "dave@pam"
+#        api_host: 192.168.1.140
+#        api_token_id: ansible-token
+#        api_token_secret: 4d8849df-4c52-43c7-a1e5-e4ef31d0a769
+#        api_user: "dave@pam"
         node: "daveServer"
         vmid: "{{ item }}"
 #            name: ubuntu01
