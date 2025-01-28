@@ -19,13 +19,12 @@
 
     - name: Start VM
       community.general.proxmox_kvm:
-#        api_host: 192.168.1.140
-#        api_token_id: ansible-token
-#        api_token_secret: 4d8849df-4c52-43c7-a1e5-e4ef31d0a769
-#        api_user: "dave@pam"
-        node: "daveServer"
+        api_host: "{{api_host}}"
+        api_token_id: "{{api_token_id}}"
+        api_token_secret: "{{api_token_secret}}"
+        api_user: "{{api_user}}"
+        node: "{{proxmox_node}}"
         vmid: "{{ item }}"
-#            name: ubuntu01
         state: started
       loop:  "{{ vm_ids }}"
       register: vm_status
