@@ -31,4 +31,4 @@
     - name: Set a variable for the workflow
       ansible.builtin.set_stats:
         data:
-          my_variable: vm_status
+          wf_vm_status: vm_status
