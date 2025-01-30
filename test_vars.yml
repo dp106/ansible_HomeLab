@@ -1,0 +1,11 @@
+---
+- name: Manage Proxmox hosts
+  hosts: all
+  tasks:
+    - name: Print database credentials
+      debug:
+        msg: 
+          - "api_host: {{ api_host }}"
+          - "api_user: {{ api_user }}"
+          - "api_token_id: {{ api_token_id }}"
+          - "api_token_secret: {{ api_token_secret }}"
