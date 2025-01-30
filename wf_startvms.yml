@@ -4,10 +4,6 @@
   gather_facts: false
 
   vars:
-#    api_host: 192.168.1.140                                  # Proxmox Server
-#    api_token_id: ansible-token
-#    api_token_secret: 4d8849df-4c52-43c7-a1e5-e4ef31d0a769
-#    api_user: "dave@pam"    
     proxmox_node:  "daveServer"                                         # Proxmox node
     ansible_python_interpreter: /root/venv/bin/python
     vm_ids:
