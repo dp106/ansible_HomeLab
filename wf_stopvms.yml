@@ -1,0 +1,29 @@
+---
+- name: Manage Proxmox hosts
+  hosts: all
+  gather_facts: false
+
+  vars:
+    api_host: 192.168.1.140                                  # Proxmox Server
+    api_token_id: ansible-token
+    api_token_secret: 4d8849df-4c52-43c7-a1e5-e4ef31d0a769
+    api_user: "dave@pam"    
+    proxmox_node:  "daveServer"                                         # Proxmox node
+    ansible_python_interpreter: /root/venv/bin/python
+#    vm_ids:
+#          - 101
+#          - 103
+#          - 108
+
+  tasks:
+      
+    - name: Stop VM's we started
+      community.general.proxmox_kvm:
+        api_host: 192.168.1.140
+        api_token_id: ansible-token
+        api_token_secret: 4d8849df-4c52-43c7-a1e5-e4ef31d0a769
+        api_user: "dave@pam"
+        node: "daveServer"
+        vmid: "{{ item }}"
+        state: stopped
+      loop:  "{{wf_vm_status | json_query('results[?status==`stopped`].vmid')}}"

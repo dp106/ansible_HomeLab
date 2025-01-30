@@ -1,0 +1,34 @@
+---
+- name: Manage Proxmox hosts
+  hosts: all
+  gather_facts: false
+
+  vars:
+    api_host: 192.168.1.140                                  # Proxmox Server
+    api_token_id: ansible-token
+    api_token_secret: 4d8849df-4c52-43c7-a1e5-e4ef31d0a769
+    api_user: "dave@pam"    
+    proxmox_node:  "daveServer"                                         # Proxmox node
+    ansible_python_interpreter: /root/venv/bin/python
+    vm_ids:
+          - 101
+          - 103
+          - 108
+
+  tasks:
+
+    - name: Start VM
+      community.general.proxmox_kvm:
+        api_host: "{{api_host}}"
+        api_token_id: "{{api_token_id}}"
+        api_token_secret: "{{api_token_secret}}"
+        api_user: "{{api_user}}"
+        node: "{{proxmox_node}}"
+        vmid: "{{ item }}"
+        state: started
+      loop:  "{{ vm_ids }}"
+      register: vm_status
+    - name: Set a variable for the workflow
+      ansible.builtin.set_stats:
+        data:
+          my_variable: vm_status
