@@ -37,5 +37,7 @@
     - name: Print VM variables
       debug:
         msg: 
-          - "vm list: {{ vm_list }}"
-          - "Container list: {{ lxc_list }}"
+          - "{{ item }}"
+#          - "vm list: {{ vm_list }}"
+#          - "Container list: {{ lxc_list }}"
+      loop: "{{vm_list | json_query('results[?type==`LXC`].vmid')}}"
