@@ -40,5 +40,5 @@
         msg: 
 #          - "{{ item }}"
           - "vm list: {{ vm_list | json_query('proxmox_vms[*].vmid') }}"
-          - "Container list: {{ lxc_list }}"
+          - "Container list: {{ lxc_list | json_query('proxmox_vms[*].vmid') }}"
 #      loop: "{{vm_list | json_query('proxmox_vms[?type==`lxc`].vmid')}}"
