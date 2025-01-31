@@ -1,6 +1,10 @@
 ---
 - name: Manage Proxmox hosts
   hosts: all
+  vars:
+    proxmox_node:  "daveServer"                                         # Proxmox node
+    ansible_python_interpreter: /root/venv/bin/python
+  
   tasks:
     - name: Print database credentials
       debug:
@@ -17,7 +21,7 @@
         api_user:  "{{ api_user }}"
         api_token_id: "{{ api_token_id }}"
         api_token_secret: "{{ api_token_secret }}"
-        node: daveServer
+        node: "{{ proxmox_node }}"
       register: vm_list
     
     - name: List all QEMU virtual machines on node
@@ -26,7 +30,7 @@
         api_user:  "{{ api_user }}"
         api_token_id: "{{ api_token_id }}"
         api_token_secret: "{{ api_token_secret }}"
-        node: daveServer
+        node: "{{ proxmox_node }}"
         type: qemu
       register: lxc_list
 
