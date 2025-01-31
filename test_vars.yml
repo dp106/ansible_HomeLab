@@ -40,4 +40,4 @@
           - "{{ item }}"
 #          - "vm list: {{ vm_list }}"
 #          - "Container list: {{ lxc_list }}"
-      loop: "{{vm_list | json_query('proxmox_vms[?type==`LXC`].vmid')}}"
+      loop: "{{vm_list | json_query('proxmox_vms[?type==`lxc`].vmid')}}"
