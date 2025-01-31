@@ -22,7 +22,8 @@
         api_token_id: "{{ api_token_id }}"
         api_token_secret: "{{ api_token_secret }}"
         node: "{{ proxmox_node }}"
-      register: vm_list
+        type: lxc
+      register: lxc_list 
     
     - name: List all QEMU virtual machines on node
       community.general.proxmox_vm_info:
@@ -32,12 +33,12 @@
         api_token_secret: "{{ api_token_secret }}"
         node: "{{ proxmox_node }}"
         type: qemu
-      register: lxc_list
+      register: vm_list
 
     - name: Print VM variables
       debug:
         msg: 
-          - "{{ item }}"
-#          - "vm list: {{ vm_list }}"
-#          - "Container list: {{ lxc_list }}"
-      loop: "{{vm_list | json_query('proxmox_vms[?type==`lxc`].vmid')}}"
+#          - "{{ item }}"
+          - "vm list: {{ vm_list }}"
+          - "Container list: {{ lxc_list }}"
+#      loop: "{{vm_list | json_query('proxmox_vms[?type==`lxc`].vmid')}}"
