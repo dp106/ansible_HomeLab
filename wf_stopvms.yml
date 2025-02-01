@@ -23,7 +23,9 @@
         node: "daveServer"
         vmid: "{{ item }}"
         state: stopped
-      loop:  "{{wf_vm_status | json_query('results[?status==`stopped`].vmid')}}"
+#      loop:  "{{wf_vm_status | json_query('results[?status==`stopped`].vmid')}}"
+      loop:  "{{wf_vm_status | json_query('results[].vmid')}}"
+      
 
     - name: Stop Containers we started
       community.general.proxmox:
@@ -34,4 +36,5 @@
         node:             "{{proxmox_node}}"
         vmid:             "{{ item }}"
         state: stopped
-      loop: "{{  wf_lxc_status | json_query('results[?status==`stopped`].vmid') }}"
+#      loop: "{{  wf_lxc_status | json_query('results[?status==`stopped`].vmid') }}"
+      loop: "{{  wf_lxc_status | json_query('results[].vmid') }}"
