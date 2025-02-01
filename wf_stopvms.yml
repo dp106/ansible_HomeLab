@@ -7,7 +7,13 @@
     proxmox_node:  "daveServer"                                         # Proxmox node
     ansible_python_interpreter: /root/venv/bin/python
 
-  tasks:      
+  tasks:    
+    - name: Print VM variables
+      debug:
+        msg: 
+          - "vm list: {{ wf_vm_status }}"
+          - "container list: {{ wf_lxc_status }}"         
+
     - name: Stop VM's we started
       community.general.proxmox_kvm:
         api_host: "{{ api_host }}"
