@@ -52,7 +52,7 @@
         vmid: "{{ item }}"
         state: started
 #      loop:  "{{ vm_ids }}"
-      loop: "{{  vm_list | json_query('proxmox_vms[*].vmid') }}"
+      loop: "{{  vm_list | json_query('proxmox_vms[?status==`stopped`].vmid') }}"
       register: vm_status
 
     - name: Start Container
@@ -64,7 +64,7 @@
         node:             "{{proxmox_node}}"
         vmid:             "{{ item }}"
         state: started
-      loop: "{{  lxc_list | json_query('proxmox_vms[*].vmid') }}"
+      loop: "{{  lxc_list | json_query('proxmox_vms[?status==`stopped`].vmid') }}"
       register: lxc_status
 
     - name: Set a variable for the workflow
