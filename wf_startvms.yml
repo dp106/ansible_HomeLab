@@ -52,7 +52,7 @@
         vmid: "{{ item }}"
         state: started
 #      loop:  "{{ vm_ids }}"
-      loop: "{{  vm_list | json_query('proxmox_vms[?status==`stopped`].vmid') }}"
+      loop: "{{  vm_list | json_query('proxmox_vms[?status==`stopped` && vmid!=102].vmid') }}"
       register: vm_status
 
     - name: Start Container
