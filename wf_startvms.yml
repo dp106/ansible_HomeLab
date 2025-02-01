@@ -6,16 +6,41 @@
   vars:
     proxmox_node:  "daveServer"                                         # Proxmox node
     ansible_python_interpreter: /root/venv/bin/python
-    vm_ids:
-          - 101
-          - 103
-          - 104
-          - 105
-          - 106
-          - 107
-          - 108
+#    vm_ids:
+#          - 101
+#          - 103
+#          - 104
+#          - 105
+#          - 106
+#          - 107
+#          - 108
 
   tasks:
+    - name: List all existing Containers
+      community.general.proxmox_vm_info:
+        api_host: "{{ api_host }}"
+        api_user:  "{{ api_user }}"
+        api_token_id: "{{ api_token_id }}"
+        api_token_secret: "{{ api_token_secret }}"
+        node: "{{ proxmox_node }}"
+        type: lxc
+      register: lxc_list 
+    
+    - name: List all Virtual Machines
+      community.general.proxmox_vm_info:
+        api_host: "{{ api_host }}"
+        api_user:  "{{ api_user }}"
+        api_token_id: "{{ api_token_id }}"
+        api_token_secret: "{{ api_token_secret }}"
+        node: "{{ proxmox_node }}"
+        type: qemu
+      register: vm_list
+
+#    - name: Print VM variables
+#      debug:
+#        msg: 
+#          - "vm list: {{ vm_list | json_query('proxmox_vms[*].vmid') }}"
+#          - "Container list: {{ lxc_list | json_query('proxmox_vms[*].vmid') }}"
 
     - name: Start VM
       community.general.proxmox_kvm:
@@ -26,9 +51,25 @@
         node: "{{proxmox_node}}"
         vmid: "{{ item }}"
         state: started
-      loop:  "{{ vm_ids }}"
+#      loop:  "{{ vm_ids }}"
+      loop: "{{  vm_list | json_query('proxmox_vms[*].vmid') }}"
       register: vm_status
+
+    - name: Start Container
+      community.general.proxmox:
+        api_host:         "{{api_host}}"
+        api_token_id:     "{{api_token_id}}"
+        api_token_secret: "{{api_token_secret}}"
+        api_user:         "{{api_user}}"
+        node:             "{{proxmox_node}}"
+        vmid:             "{{ item }}"
+        state: started
+      loop: "{{  lxc_list | json_query('proxmox_vms[*].vmid') }}"
+      register: lxc_status
+
     - name: Set a variable for the workflow
       ansible.builtin.set_stats:
         data:
           wf_vm_status: "{{ vm_status }}"
+          wf_lxc_status: "{{ lxc_status }}"
+

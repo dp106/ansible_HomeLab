@@ -18,3 +18,14 @@
         vmid: "{{ item }}"
         state: stopped
       loop:  "{{wf_vm_status | json_query('results[?status==`stopped`].vmid')}}"
+
+    - name: Stop Containers we started
+      community.general.proxmox:
+        api_host:         "{{api_host}}"
+        api_token_id:     "{{api_token_id}}"
+        api_token_secret: "{{api_token_secret}}"
+        api_user:         "{{api_user}}"
+        node:             "{{proxmox_node}}"
+        vmid:             "{{ item }}"
+        state: stopped
+      loop: "{{  wf_lxc_status | json_query('results[?status==`stopped`].vmid') }}"
