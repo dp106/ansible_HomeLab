@@ -1,0 +1,13 @@
+---
+- name: Update and shutdown Windows machine
+  hosts: all
+  gather_facts: yes
+  tasks:
+    - name: Download and install Windows updates without automatic reboot
+      win_updates:
+        reboot: no
+      register: update_status
+
+    - name: Shutdown the computer after updates are installed
+      win_shell: shutdown /s /t 0
+      when: update_status.changed or update_status.reboot_required
