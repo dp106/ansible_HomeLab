@@ -10,4 +10,4 @@
 
     - name: Shutdown the computer after updates are installed
       win_shell: shutdown /s /t 0
-      when: update_status.changed or update_status.reboot_required
+#      when: update_status.changed or update_status.reboot_required
