@@ -3,6 +3,9 @@
   hosts: all
   gather_facts: yes
   tasks:
+    - name: Pause for 1 minute to make sure VM is up
+      ansible.builtin.pause:
+        seconds: 60
     - name: Download and install Windows updates without automatic reboot
       win_updates:
         reboot: no
